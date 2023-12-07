@@ -1,0 +1,158 @@
+
+GccApplication1.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000000a0  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  000000f4  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  000000f4  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000124  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000038  00000000  00000000  00000160  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   0000072b  00000000  00000000  00000198  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 000005ae  00000000  00000000  000008c3  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   0000030a  00000000  00000000  00000e71  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000054  00000000  00000000  0000117c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    000003dc  00000000  00000000  000011d0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_ranges 00000028  00000000  00000000  000015ac  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	19 c0       	rjmp	.+50     	; 0x36 <__bad_interrupt>
+   4:	18 c0       	rjmp	.+48     	; 0x36 <__bad_interrupt>
+   6:	17 c0       	rjmp	.+46     	; 0x36 <__bad_interrupt>
+   8:	16 c0       	rjmp	.+44     	; 0x36 <__bad_interrupt>
+   a:	15 c0       	rjmp	.+42     	; 0x36 <__bad_interrupt>
+   c:	14 c0       	rjmp	.+40     	; 0x36 <__bad_interrupt>
+   e:	13 c0       	rjmp	.+38     	; 0x36 <__bad_interrupt>
+  10:	12 c0       	rjmp	.+36     	; 0x36 <__bad_interrupt>
+  12:	11 c0       	rjmp	.+34     	; 0x36 <__bad_interrupt>
+  14:	10 c0       	rjmp	.+32     	; 0x36 <__bad_interrupt>
+  16:	0f c0       	rjmp	.+30     	; 0x36 <__bad_interrupt>
+  18:	0e c0       	rjmp	.+28     	; 0x36 <__bad_interrupt>
+  1a:	0d c0       	rjmp	.+26     	; 0x36 <__bad_interrupt>
+  1c:	0c c0       	rjmp	.+24     	; 0x36 <__bad_interrupt>
+  1e:	0b c0       	rjmp	.+22     	; 0x36 <__bad_interrupt>
+  20:	0a c0       	rjmp	.+20     	; 0x36 <__bad_interrupt>
+  22:	09 c0       	rjmp	.+18     	; 0x36 <__bad_interrupt>
+  24:	08 c0       	rjmp	.+16     	; 0x36 <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+  32:	0d d0       	rcall	.+26     	; 0x4e <main>
+  34:	33 c0       	rjmp	.+102    	; 0x9c <_exit>
+
+00000036 <__bad_interrupt>:
+  36:	e4 cf       	rjmp	.-56     	; 0x0 <__vectors>
+
+00000038 <_Z10USART_Initv>:
+	while (!(UCSRA & (1 << RXC)))
+	;
+
+	// Retourner les données reçues
+	return UDR;
+}
+  38:	83 e3       	ldi	r24, 0x33	; 51
+  3a:	89 b9       	out	0x09, r24	; 9
+  3c:	88 e1       	ldi	r24, 0x18	; 24
+  3e:	8a b9       	out	0x0a, r24	; 10
+  40:	86 e8       	ldi	r24, 0x86	; 134
+  42:	80 bd       	out	0x20, r24	; 32
+  44:	08 95       	ret
+
+00000046 <_Z14USART_Transmith>:
+  46:	5d 9b       	sbis	0x0b, 5	; 11
+  48:	fe cf       	rjmp	.-4      	; 0x46 <_Z14USART_Transmith>
+  4a:	8c b9       	out	0x0c, r24	; 12
+  4c:	08 95       	ret
+
+0000004e <main>:
+
+int main() {
+	// Initialiser la communication UART
+	USART_Init();
+  4e:	f4 df       	rcall	.-24     	; 0x38 <_Z10USART_Initv>
+
+	while (1) {
+		// Envoyer "Hello, World!" via UART
+		USART_Transmit('H');
+  50:	88 e4       	ldi	r24, 0x48	; 72
+  52:	f9 df       	rcall	.-14     	; 0x46 <_Z14USART_Transmith>
+		USART_Transmit('e');
+  54:	85 e6       	ldi	r24, 0x65	; 101
+  56:	f7 df       	rcall	.-18     	; 0x46 <_Z14USART_Transmith>
+		USART_Transmit('l');
+  58:	8c e6       	ldi	r24, 0x6C	; 108
+  5a:	f5 df       	rcall	.-22     	; 0x46 <_Z14USART_Transmith>
+		USART_Transmit('l');
+  5c:	8c e6       	ldi	r24, 0x6C	; 108
+  5e:	f3 df       	rcall	.-26     	; 0x46 <_Z14USART_Transmith>
+		USART_Transmit('o');
+  60:	8f e6       	ldi	r24, 0x6F	; 111
+  62:	f1 df       	rcall	.-30     	; 0x46 <_Z14USART_Transmith>
+		USART_Transmit(',');
+  64:	8c e2       	ldi	r24, 0x2C	; 44
+  66:	ef df       	rcall	.-34     	; 0x46 <_Z14USART_Transmith>
+		USART_Transmit(' ');
+  68:	80 e2       	ldi	r24, 0x20	; 32
+  6a:	ed df       	rcall	.-38     	; 0x46 <_Z14USART_Transmith>
+		USART_Transmit('W');
+  6c:	87 e5       	ldi	r24, 0x57	; 87
+  6e:	eb df       	rcall	.-42     	; 0x46 <_Z14USART_Transmith>
+		USART_Transmit('o');
+  70:	8f e6       	ldi	r24, 0x6F	; 111
+  72:	e9 df       	rcall	.-46     	; 0x46 <_Z14USART_Transmith>
+		USART_Transmit('r');
+  74:	82 e7       	ldi	r24, 0x72	; 114
+  76:	e7 df       	rcall	.-50     	; 0x46 <_Z14USART_Transmith>
+		USART_Transmit('l');
+  78:	8c e6       	ldi	r24, 0x6C	; 108
+  7a:	e5 df       	rcall	.-54     	; 0x46 <_Z14USART_Transmith>
+		USART_Transmit('d');
+  7c:	84 e6       	ldi	r24, 0x64	; 100
+  7e:	e3 df       	rcall	.-58     	; 0x46 <_Z14USART_Transmith>
+		USART_Transmit('!');
+  80:	81 e2       	ldi	r24, 0x21	; 33
+  82:	e1 df       	rcall	.-62     	; 0x46 <_Z14USART_Transmith>
+		USART_Transmit('\n');
+  84:	8a e0       	ldi	r24, 0x0A	; 10
+  86:	df df       	rcall	.-66     	; 0x46 <_Z14USART_Transmith>
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  88:	2f e3       	ldi	r18, 0x3F	; 63
+  8a:	8d e0       	ldi	r24, 0x0D	; 13
+  8c:	93 e0       	ldi	r25, 0x03	; 3
+  8e:	21 50       	subi	r18, 0x01	; 1
+  90:	80 40       	sbci	r24, 0x00	; 0
+  92:	90 40       	sbci	r25, 0x00	; 0
+  94:	e1 f7       	brne	.-8      	; 0x8e <main+0x40>
+  96:	00 c0       	rjmp	.+0      	; 0x98 <main+0x4a>
+  98:	00 00       	nop
+  9a:	da cf       	rjmp	.-76     	; 0x50 <main+0x2>
+
+0000009c <_exit>:
+  9c:	f8 94       	cli
+
+0000009e <__stop_program>:
+  9e:	ff cf       	rjmp	.-2      	; 0x9e <__stop_program>
